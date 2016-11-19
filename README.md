@@ -1,10 +1,10 @@
 # Kubernetes environment generator
 
 Makes [docker env files](https://docs.docker.com/compose/env-file/) 
-compatible with kubernetes by: 
+compatible with kubernetes by generating: 
 
-1. generating a _create configmap_ command with kubernetes compatible keys
-1. generating a _environment snippet_ to paste into deployment yaml that links environment variables back to configmap 
+1. _create configmap_ command with kubernetes compatible keys
+1. _environment snippet_ to paste into deployment yaml that links environment variables back to configmap 
 
 Reason for this:
 
