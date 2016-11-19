@@ -1,4 +1,4 @@
-# Kubernetes environment generator
+# Kubernetes Environment Generator
 
 Makes [docker env files](https://docs.docker.com/compose/env-file/) 
 compatible with kubernetes by generating: 
@@ -15,7 +15,7 @@ Reason for this:
 
 Execute the following to generate both configmap command and environment snippet:
 
-`./k8s-env-gen.sh configmap-name my.env`
+`./keg.sh configmap-name docker.env`
 
 This will convert environment keys into kubernetes compatible format, 
 generate create configmap command, and map keys back to original 
@@ -31,7 +31,7 @@ DB_POOL_MINSIZE=10
 ```
 
 ```sh
-$ ./k8s-env-gen.sh my-config my.env
+$ ./keg.sh my-config my.env
 ```
 
 ```sh
