@@ -15,27 +15,34 @@ Reason for this:
 
 Execute the following to generate both configmap command and environment snippet:
 
-`./keg.sh configmap-name docker.env`
+`./keg.sh configmap-name env-file [env-file ...]`
 
 This will convert environment keys into kubernetes compatible format, 
 generate create configmap command, and map keys back to original 
-environment name in snippet.
+environment name in snippet. Keys repeated in subsequent files
+will overwrite previous values.
 
 ### Example
 
 ```sh
-$ cat my.env 
+$ cat env/core.env 
 DB_DRIVER=com.mysql.jdbc.Driver
 DB_POOL_MAXSIZE=15
 DB_POOL_MINSIZE=10
 ```
 
 ```sh
-$ ./keg.sh my-config my.env
+$ cat env/prod.env 
+DB_POOL_MAXSIZE=20
+DB_URL=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
 ```
 
 ```sh
-kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-maxsize=15 --from-literal=db-pool-minsize=10
+$ ./keg.sh my-config env/core.env env/prod.env
+```
+
+```sh
+kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-minsize=10 --from-literal=db-pool-maxsize=20 --from-literal=db-url=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
 ```
 
 ```yaml
@@ -45,41 +52,46 @@ kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Drive
               configMapKeyRef:
                 name: my-config
                 key: db-driver
-          - name: DB_POOL_MAXSIZE
-            valueFrom:
-              configMapKeyRef:
-                name: my-config
-                key: db-pool-maxsize
           - name: DB_POOL_MINSIZE
             valueFrom:
               configMapKeyRef:
                 name: my-config
                 key: db-pool-minsize
+          - name: DB_POOL_MAXSIZE
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: db-pool-maxsize
+          - name: DB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: db-url
 ```
 
 #### Create configmap:
 
 ```sh
-$ kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-maxsize=15 --from-literal=db-pool-minsize=10
+$ kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-minsize=10 --from-literal=db-pool-maxsize=20 --from-literal=db-url=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
 ```
 
 #### Verify configmap:
 
 ```sh
-$ kubectl get configmap my-conf -o yaml
+$ kubectl get configmap my-config -o yaml
 ```
 
 ```yaml
 apiVersion: v1
 data:
   db-driver: com.mysql.jdbc.Driver
-  db-pool-maxsize: "15"
+  db-pool-maxsize: "20"
   db-pool-minsize: "10"
-  db-user: my-app
+  db-url: jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
 kind: ConfigMap
 metadata:
-  creationTimestamp: 2016-11-19T00:01:18Z
-  name: my-conf
+  creationTimestamp: 2016-11-19T23:23:30Z
+  name: my-config
   namespace: my-app
   resourceVersion: "9098351"
   selfLink: /api/v1/namespaces/my-app/configmaps/my-conf
@@ -112,31 +124,31 @@ spec:
               configMapKeyRef:
                 name: my-config
                 key: db-driver
-          - name: DB_POOL_MAXSIZE
-            valueFrom:
-              configMapKeyRef:
-                name: my-config
-                key: db-pool-maxsize
           - name: DB_POOL_MINSIZE
             valueFrom:
               configMapKeyRef:
                 name: my-config
                 key: db-pool-minsize
-          - name: DB_PASSWORD
+          - name: DB_POOL_MAXSIZE
             valueFrom:
-              secretKeyRef:
-                name: my-secret
-                key: db-password
+              configMapKeyRef:
+                name: my-config
+                key: db-pool-maxsize
+          - name: DB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: db-url
           - name: DB_USER
             valueFrom:
               secretKeyRef:
                 name: my-secret
                 key: db-user
-          - name: DB_URL
+          - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: my-secret
-                key: db-url
+                key: db-password
         ports:
         - containerPort: 8080
       - name: redirect-http-to-https
