@@ -17,10 +17,7 @@ Execute the following to generate both configmap command and environment snippet
 
 `./keg.sh configmap-name env-file [env-file ...]`
 
-This will convert environment keys into kubernetes compatible format, 
-generate create configmap command, and map keys back to original 
-environment name in snippet. Keys repeated in subsequent files
-will overwrite previous values.
+Keys repeated in subsequent files will overwrite previous key values.
 
 ### Example
 
