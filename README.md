@@ -13,9 +13,11 @@ Reason for this:
 
 ## Usage
 
+Copy `keg` to `/usr/local/bin`. 
+
 Execute the following to generate both configmap command and environment snippet:
 
-`./keg.sh configmap-name env-file [env-file ...]`
+`keg configmap-name env-file [env-file ...]`
 
 Keys repeated in subsequent files will overwrite previous key values.
 
@@ -23,27 +25,25 @@ Keys repeated in subsequent files will overwrite previous key values.
 
 ```sh
 $ cat env/core.env 
+NAME=Product Name
 DB_DRIVER=com.mysql.jdbc.Driver
 DB_POOL_MAXSIZE=15
 DB_POOL_MINSIZE=10
-```
 
-```sh
 $ cat env/prod.env 
 DB_POOL_MAXSIZE=20
 DB_URL=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
-```
 
-```sh
-$ ./keg.sh my-config env/core.env env/prod.env
-```
+$ keg my-config env/core.env env/prod.env
 
-```sh
-kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-minsize=10 --from-literal=db-pool-maxsize=20 --from-literal=db-url=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
-```
+kubectl create configmap my-config --from-literal=name="Product Name" --from-literal=db-driver="com.mysql.jdbc.Driver" --from-literal=db-pool-minsize="10" --from-literal=db-pool-maxsize="20" --from-literal=db-url="jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8"
 
-```yaml
         env:
+          - name: NAME
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: name
           - name: DB_DRIVER
             valueFrom:
               configMapKeyRef:
@@ -69,7 +69,7 @@ kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Drive
 #### Create configmap:
 
 ```sh
-$ kubectl create configmap my-config --from-literal=db-driver=com.mysql.jdbc.Driver --from-literal=db-pool-minsize=10 --from-literal=db-pool-maxsize=20 --from-literal=db-url=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
+$ kubectl create configmap my-config --from-literal=name="Product Name" --from-literal=db-driver="com.mysql.jdbc.Driver" --from-literal=db-pool-minsize="10" --from-literal=db-pool-maxsize="20" --from-literal=db-url="jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8"
 ```
 
 #### Verify configmap:
@@ -85,14 +85,15 @@ data:
   db-pool-maxsize: "20"
   db-pool-minsize: "10"
   db-url: jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
+  name: Product Name
 kind: ConfigMap
 metadata:
-  creationTimestamp: 2016-11-19T23:23:30Z
+  creationTimestamp: 2016-11-20T01:59:33Z
   name: my-config
   namespace: my-app
-  resourceVersion: "9098351"
-  selfLink: /api/v1/namespaces/my-app/configmaps/my-conf
-  uid: 4bea0444-adeb-11e6-8c60-065eece225bf
+  resourceVersion: "9281367"
+  selfLink: /api/v1/namespaces/my-app/configmaps/my-config
+  uid: fb9eedcb-aec4-11e6-8c60-065eece225bf
 ```
 
 #### Paste snippet into deployment yaml
@@ -116,6 +117,11 @@ spec:
         image: quay.io/example/my-app:LATEST
         imagePullPolicy: Always
         env:
+          - name: NAME
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: name
           - name: DB_DRIVER
             valueFrom:
               configMapKeyRef:

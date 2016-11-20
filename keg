@@ -1,8 +1,9 @@
 #!/bin/bash
 
-#
-# Usage: ./keg.sh configmap-name env-file [env-file ...]
-#
+if [ "$#" -lt 2 ]; then
+    echo "Usage: keg configmap-name env-file [env-file ...]"
+    exit 1;
+fi
 
 put() {
     if [ "$#" != 2 ]; then exit 1; fi
@@ -24,14 +25,18 @@ keys() {
     keys=`echo $map | sed -e "s/=[^ ]*//g" -e "s/\([ ]*\)--/\1/g"`
 }
 
+cd $(pwd)
+
 configmap_name=$1
 shift
+
+# read env key values from file(s) into map
 while [ "$1" != "" ]; do
     while IFS='' read -r line || [[ -n "$line" ]]; do
         if [[ $line == *"="* ]]
         then
             IFS='=' read -r k v <<< "$line"
-            put ${k} ${v}
+            put "${k}" "${v}"
         fi
     done < "$1"
     shift
@@ -47,7 +52,7 @@ do
     echo -n " --from-literal="
     echo -n "${key//_/-}" | tr '[:upper:]' '[:lower:]'
     get ${key}
-    echo -n "=${value}"
+    echo -n "=\"${value}\""
 done
 echo ""
 echo ""
