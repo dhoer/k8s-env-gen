@@ -1,4 +1,4 @@
-# Kubernetes Secret Generator
+# Kubernetes Environment Generator
 
 Makes [docker env files](https://docs.docker.com/compose/env-file/) 
 compatible with kubernetes by generating: 
