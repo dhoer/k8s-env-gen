@@ -32,7 +32,7 @@ WARNING! Double quotes and variable substitutions in env values are not supporte
 
 ### ConfigMap Example
 
-```sh
+```
 $ cat ./env/core.env 
 # =Comments and empty lines are ignored
 NAME=Product Name
@@ -40,13 +40,17 @@ NAME=Product Name
 DB_DRIVER=com.mysql.jdbc.Driver
 DB_POOL_MAXSIZE=15
 DB_POOL_MINSIZE=10
+```
 
+```
 $ cat ./env/prod.env 
 # =Comments and empty lines are ignored
 DB_POOL_MAXSIZE=20
 
 DB_URL=jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8
+```
 
+```sh
 $ keg my-config ./env/core.env ./env/prod.env
 
 kubectl create configmap my-config --from-literal=name="Product Name" --from-literal=db-driver="com.mysql.jdbc.Driver" --from-literal=db-pool-minsize="10" --from-literal=db-pool-maxsize="20" --from-literal=db-url="jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8"
@@ -171,16 +175,20 @@ spec:
 
 ### Secret Example
 
-```sh
+```
 $ cat ./env/secret-core.env
 # For demo only, never commit secrets to git
 DB_USER=admin
 DB_PASSWORD=mysql
+```
 
+```
 $ cat ./env/secret-prod.env
 # For demo only, never commit secrets to git
 DB_PASSWORD=4J,brw=v\G}dF4JC7QYVWjeHu;GRen
+```
 
+```sh
 $ keg -s my-secret ./env/secret-core.env ./env/secret-prod.env
 
 apiVersion: v1
