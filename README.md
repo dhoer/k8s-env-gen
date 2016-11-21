@@ -66,13 +66,13 @@ kubectl create configmap my-config --from-literal=name="Product Name" --from-lit
                 key: db-url
 ```
 
-#### Create configmap:
+#### Create configmap
 
 ```sh
 $ kubectl create configmap my-config --from-literal=name="Product Name" --from-literal=db-driver="com.mysql.jdbc.Driver" --from-literal=db-pool-minsize="10" --from-literal=db-pool-maxsize="20" --from-literal=db-url="jdbc:mysql://db.example.com/mydb?characterEncoding=UTF-8"
 ```
 
-#### Verify configmap:
+#### Verify configmap
 
 ```sh
 $ kubectl get configmap my-config -o yaml
