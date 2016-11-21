@@ -6,7 +6,7 @@ compatible with kubernetes by generating:
 1. _create configmap_ command with kubernetes compatible keys
 1. _environment snippet_ to paste into deployment yaml that links environment variables back to configmap 
 
-Reason for this:
+Reason for this (kubernetes v1.4):
 
 * [Environment Variable names](https://google.github.io/styleguide/shell.xml?showone=Constants_and_Environment_Variable_Names#Constants_and_Environment_Variable_Names) are not allowed as root configmap keys
 * Using create configmap with --from-file option nests data which can't be mapped to env deployment file
