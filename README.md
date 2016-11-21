@@ -4,7 +4,7 @@ Makes [docker env files](https://docs.docker.com/compose/env-file/)
 compatible with kubernetes by generating: 
 
 1. configmap script or secret yaml file with kubernetes compatible keys
-1. environment snippet to paste into deployment yaml that links environment variables back to configmap or secrets
+1. environment snippet to paste into deployment yaml that links environment variables back to configmap or secret
 
 Reason for this (kubernetes v1.4):
 
@@ -21,7 +21,7 @@ Execute the following to generate configmap command or secret yaml file, and env
 
 Where:
   
-- `-s` - Create secret yaml and env snippet
+- `-s` - Create secret yaml file and env snippet
 - `name` - Configmap or secret name
 - `file` - Path to environment file
 
