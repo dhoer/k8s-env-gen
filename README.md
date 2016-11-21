@@ -28,7 +28,7 @@ Where:
 Keys repeated in subsequent files will overwrite previous key values. 
 Comments and blank spaces in env files are ignored.
 
-WARNING! Quotes and variable substitutions in env values are not supported at this time.
+WARNING! Double quotes and variable substitutions in env values are not supported at this time.
 
 ### ConfigMap Example
 
@@ -179,7 +179,7 @@ DB_PASSWORD=mysql
 
 $ cat ./env/secret-prod.env
 # For demo only, never commit secrets to git
-DB_PASSWORD=4J,brw=v\G"}d"F4JC7QYVWjeHu;GRen
+DB_PASSWORD=4J,brw=v\G}dF4JC7QYVWjeHu;GRen
 
 $ keg -s my-secret ./env/secret-core.env ./env/secret-prod.env
 
