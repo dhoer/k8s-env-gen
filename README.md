@@ -3,8 +3,8 @@
 Makes [docker env files](https://docs.docker.com/compose/env-file/) 
 compatible with kubernetes by generating: 
 
-1. _create configmap_ script or secret yaml file with kubernetes compatible keys
-1. _environment snippet_ file to paste into deployment yaml that links environment variables back to configmap or secrets
+1. configmap script or secret yaml file with kubernetes compatible keys
+1. environment snippet to paste into deployment yaml that links environment variables back to configmap or secrets
 
 Reason for this (kubernetes v1.4):
 
@@ -15,7 +15,7 @@ Reason for this (kubernetes v1.4):
 
 Copy `keg` to `/usr/local/bin`. 
 
-Execute the following to generate configmap command or secret yaml, and environment snippet:
+Execute the following to generate configmap command or secret yaml file, and environment snippet:
 
 `keg [-s] name file [file ...]`
 
@@ -26,7 +26,8 @@ Where:
 - `file` - Path to environment file
 
 Keys repeated in subsequent files will overwrite previous key values. 
-Comments and blank spaces are ignored.
+Comments and blank spaces in env files are ignored.
+
 Quotes and variable substitutions in env values are not supported at this time.
 
 ### ConfigMap Example
