@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -lt 2 ]; then
-    echo "Usage: keg configmap-name env-file [env-file ...]"
+    echo "Usage: keg [-s] name file [file ...]"
     exit 1;
 fi
 
@@ -27,13 +27,19 @@ keys() {
 
 cd $(pwd)
 
-configmap_name=$1
+secret=false
+if [ "$1" = "-s" ]; then
+    secret=true
+    shift
+fi
+
+name=$1
 shift
 
 # read env key values from file(s) into map
 while [ "$1" != "" ]; do
     while IFS='' read -r line || [[ -n "$line" ]]; do
-        if [[ $line == *"="* ]]
+        if [[ $line == *"="* ]] && [[ $line != *"#"* ]]
         then
             IFS='=' read -r k v <<< "$line"
             put "${k}" "${v}"
@@ -44,27 +50,59 @@ done
 
 keys
 
-# generates a configmap command
+if [ "$secret" = true ] ; then
+    # generates secret yaml
+    fileout="${name}.yaml"
+    echo ""
+    echo "apiVersion: v1" | tee ${fileout}
+    echo "kind: Secret" | tee -a ${fileout}
+    echo "metadata:" | tee -a ${fileout}
+    echo "  name: $name" | tee -a ${fileout}
+    echo "type: Opaque" | tee -a ${fileout}
+    echo "data:" | tee -a ${fileout}
+    for key in ${keys}
+    do
+        echo -n "  ${key//_/-}: " | tr '[:upper:]' '[:lower:]' | tee -a ${fileout}
+        get ${key}
+        echo -n "${value}" | base64 | tee -a ${fileout}
+    done
+else
+    # generates a configmap command
+    fileout="create-configmap-${name}.sh"
+    echo "#!/bin/sh" > ${fileout}
+    chmod +x ${fileout}
+    echo ""
+    echo -n "kubectl create configmap $name" | tee -a ${fileout}
+    for key in ${keys}
+    do
+        echo -n " --from-literal=" | tee -a ${fileout}
+        echo -n "${key//_/-}" | tr '[:upper:]' '[:lower:]' | tee -a ${fileout}
+        get ${key}
+        echo -n "=\"${value}\"" | tee -a ${fileout}
+    done
+    echo "" | tee -a ${fileout}
+
+fi
+
 echo ""
-echo -n "kubectl create configmap $configmap_name"
-for key in ${keys}
-do
-    echo -n " --from-literal="
-    echo -n "${key//_/-}" | tr '[:upper:]' '[:lower:]'
-    get ${key}
-    echo -n "=\"${value}\""
-done
-echo ""
+echo "Created ${fileout}"
 echo ""
 
 # generates environment snippet to paste into deployment yaml
-echo "        env:"
+fileout="env-snippet-${name}.yaml"
+echo "        env:" | tee ${fileout}
 for key in ${keys}
 do
-    echo "          - name: ${key}"
-    echo "            valueFrom:"
-    echo "              configMapKeyRef:"
-    echo "                name: $configmap_name"
-    echo "                key: ${key//_/-}" | tr '[:upper:]' '[:lower:]'
+    echo "          - name: ${key}" | tee -a ${fileout}
+    echo "            valueFrom:" | tee -a ${fileout}
+    if [ "$secret" = true ] ; then
+        echo "              secretKeyRef:" | tee -a ${fileout}
+    else
+        echo "              configMapKeyRef:" | tee -a ${fileout}
+    fi
+    echo "                name: $name" | tee -a ${fileout}
+    echo "                key: ${key//_/-}" | tr '[:upper:]' '[:lower:]' | tee -a ${fileout}
 done
+echo ""
+echo "Created ${fileout}"
 echo ""
