@@ -28,7 +28,7 @@ Where:
 Keys repeated in subsequent files will overwrite previous key values. 
 Comments and blank spaces in env files are ignored.
 
-Quotes and variable substitutions in env values are not supported at this time.
+WARNING! Quotes and variable substitutions in env values are not supported at this time.
 
 ### ConfigMap Example
 
