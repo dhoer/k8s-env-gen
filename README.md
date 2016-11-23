@@ -310,3 +310,31 @@ spec:
         ports:
         - containerPort: 80
 ```
+
+## Scripts to update env in depoyment yaml
+
+Script examples to add configmap and secrets to deployment yaml file.
+
+Ruby
+```ruby
+ruby -e "require 'yaml'; \
+  configmap = YAML.load_file('env-snippet-my-config.yaml'); \
+  secret = YAML.load_file('env-snippet-my-secret.yaml'); \
+  snippet = configmap['env'].concat(secret['env']); \
+  deployment = YAML.load_file('./k8s/deployment.yaml'); \
+  deployment['spec']['template']['spec']['containers'][0]['env'].replace(snippet); \
+  IO.write('merged-deployment.yaml', deployment.to_yaml);"
+```
+
+Python
+```python
+# yaml.load gives you a dict and its keys are unordered so yaml.dump outputs in random order
+python -c 'import yaml; \
+  configmap = yaml.load(open("env-snippet-my-config.yaml", "r")); \
+  secret = yaml.load(open("env-snippet-my-secret.yaml", "r")); \
+  snippet = configmap["env"]+secret["env"]; \
+  deployment = yaml.load(open("./k8s/deployment.yaml", "r")); \
+  deployment["spec"]["template"]["spec"]["containers"][0]["env"] = snippet; \
+  fo = open("merged-deployment.yaml", "w"); \
+  fo.write(yaml.dump(deployment))'
+```

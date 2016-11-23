@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-app
+        app: my-app
+        env: production
+    spec:
+      containers:
+      - name: my-app
+        image: quay.io/example/my-app:LATEST
+        imagePullPolicy: Always
+        env:
+        - replace
+        ports:
+        - containerPort: 8080
+      - name: redirect-http-to-https
+        image: hope/redirect-http-to-https
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
