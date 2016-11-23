@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 1.2.0 
+
+- Add script examples to update env in depoyment yaml
+- Remove eval from keg script
+
 # 1.1.0 - 2016-11-21
 
 - Add support for secrets yaml
