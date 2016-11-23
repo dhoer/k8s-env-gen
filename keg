@@ -7,22 +7,17 @@ fi
 
 put() {
     if [ "$#" != 2 ]; then exit 1; fi
-    mapName=configmap; key=$1; value=`echo $2 | sed -e "s/ /:SP:/g"`
-    eval map="\"\$$mapName\""
-    map="`echo "$map" | sed -e "s/--$key=[^ ]*//g"` --$key=$value"
-    eval $mapName="\"$map\""
+    key=$1; value=`echo $2 | sed -e "s/ /:SP:/g"`
+    configmap="`echo "$configmap" | sed -e "s/--$key=[^ ]*//g"` --$key=$value"
 }
 
 get() {
-    mapName=configmap; key=$1
-    map=${!mapName}
-    value="$(echo $map |sed -e "s/.*--${key}=\([^ ]*\).*/\1/" -e 's/:SP:/ /g' )"
+    key=$1
+    value="$(echo $configmap |sed -e "s/.*--${key}=\([^ ]*\).*/\1/" -e 's/:SP:/ /g' )"
 }
 
 keys() {
-    mapName=configmap
-    eval map="\"\$$mapName\""
-    keys=`echo $map | sed -e "s/=[^ ]*//g" -e "s/\([ ]*\)--/\1/g"`
+    keys=`echo $configmap | sed -e "s/=[^ ]*//g" -e "s/\([ ]*\)--/\1/g"`
 }
 
 secret=false
