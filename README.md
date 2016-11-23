@@ -329,12 +329,12 @@ ruby -e "require 'yaml'; \
 Python
 ```python
 # yaml.load gives you a dict and its keys are unordered so yaml.dump outputs in random order
-python -c 'import yaml; \
-  configmap = yaml.load(open("env-snippet-my-config.yaml", "r")); \
-  secret = yaml.load(open("env-snippet-my-secret.yaml", "r")); \
-  snippet = configmap["env"]+secret["env"]; \
-  deployment = yaml.load(open("./k8s/deployment.yaml", "r")); \
-  deployment["spec"]["template"]["spec"]["containers"][0]["env"] = snippet; \
-  fo = open("merged-deployment.yaml", "w"); \
-  fo.write(yaml.dump(deployment))'
+python -c "import yaml; \
+  configmap = yaml.load(open('env-snippet-my-config.yaml', 'r')); \
+  secret = yaml.load(open('env-snippet-my-secret.yaml', 'r')); \
+  snippet = configmap['env']+secret['env']; \
+  deployment = yaml.load(open('./k8s/deployment.yaml', 'r')); \
+  deployment['spec']['template']['spec']['containers'][0]['env'] = snippet; \
+  fo = open('merged-deployment.yaml', 'w'); \
+  fo.write(yaml.dump(deployment))"
 ```
