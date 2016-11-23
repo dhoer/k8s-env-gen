@@ -8,16 +8,16 @@ fi
 put() {
     if [ "$#" != 2 ]; then exit 1; fi
     key=$1; value=`echo $2 | sed -e "s/ /:SP:/g"`
-    configmap="`echo "$configmap" | sed -e "s/--$key=[^ ]*//g"` --$key=$value"
+    envmap="`echo "$envmap" | sed -e "s/--$key=[^ ]*//g"` --$key=$value"
 }
 
 get() {
     key=$1
-    value="$(echo $configmap |sed -e "s/.*--${key}=\([^ ]*\).*/\1/" -e 's/:SP:/ /g' )"
+    value="$(echo $envmap |sed -e "s/.*--${key}=\([^ ]*\).*/\1/" -e 's/:SP:/ /g' )"
 }
 
 keys() {
-    keys=`echo $configmap | sed -e "s/=[^ ]*//g" -e "s/\([ ]*\)--/\1/g"`
+    keys=`echo $envmap | sed -e "s/=[^ ]*//g" -e "s/\([ ]*\)--/\1/g"`
 }
 
 secret=false
