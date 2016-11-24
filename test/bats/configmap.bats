@@ -5,7 +5,7 @@ function setup {
 }
 
 function teardown {
-  rm -fr create-configmap-my-config.sh env-snippet-my-config.yaml
+  rm -fr d #create-configmap-my-config.sh env-snippet-my-config.yaml
 }
 
 @test "generates create-configmap-my-config.sh" {
@@ -17,9 +17,8 @@ function teardown {
 
 
 @test "create-configmap-my-config.sh is executable" {
-  run ls -l create-configmap-my-config.sh
+  run test -x create-configmap-my-config.sh
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "-rwxr-xr-x" ]]
 }
 
 @test "generates env-snippet-my-config.yaml" {
