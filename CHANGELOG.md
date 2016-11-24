@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# 1.2.0 
+# 1.1.1 - 2016-11-23
 
 - Add script examples to update env in depoyment yaml
 - Remove eval from keg script
