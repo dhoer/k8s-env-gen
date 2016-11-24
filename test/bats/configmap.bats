@@ -5,7 +5,7 @@ function setup {
 }
 
 function teardown {
-  rm -fr d #create-configmap-my-config.sh env-snippet-my-config.yaml
+  rm -fr create-configmap-my-config.sh env-snippet-my-config.yaml
 }
 
 @test "generates create-configmap-my-config.sh" {
