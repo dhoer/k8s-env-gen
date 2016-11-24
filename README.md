@@ -182,14 +182,14 @@ spec:
 ### Secret Example
 
 ```
-$ cat ./env/secret-core.env
+$ cat ./secret/core.env
 # For demo only, never commit secrets to git
 DB_USER=admin
 DB_PASSWORD=mysql
 ```
 
 ```
-$ cat ./env/secret-prod.env
+$ cat ./secret/prod.env
 # For demo only, never commit secrets to git
 DB_PASSWORD=4J,brw=v\G}dF4JC7QYVWjeHu;GRen
 ```
