@@ -1,5 +1,7 @@
 # Kubernetes Environment Generator
 
+[![Build Status](https://travis-ci.org/dhoer/k8s-env-gen.svg?branch=master)](https://travis-ci.org/dhoer/k8s-env-gen)
+
 Makes [docker env files](https://docs.docker.com/compose/env-file/) 
 compatible with kubernetes by generating: 
 
